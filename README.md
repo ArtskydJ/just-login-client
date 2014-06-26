@@ -1,6 +1,6 @@
 just-login-client
 =================
 
-##License
+#Specs
 
-(MIT)[http://opensource.org/licenses/MIT]
+this module creates a server and sends stuff to the browser...

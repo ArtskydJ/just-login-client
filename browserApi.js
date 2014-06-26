@@ -6,34 +6,33 @@ var sendTheEmail = require('./emailWrapper.js')
 var fakeId = "LOLThisIsAFakeSessionId"
 var fakeAddress = "example@example.com"
 
-//jlc ('->' signifies 'returns')
-//    isAuthenticated(sessionId, cb) -> null
-//    beginAuthentication(session id, contact address) -> event emitter
-//    authenticate(token, cb) -> null
-
 function getFullApi(sessionId) { //MOD THIS FUNCTION NOW!!!
 	return {
 		tryToLogIn: function(emailAddress) {
-			console.log("I'm trying to log in with sessionid", sessionId, "and email address", emailAddress)
+			console.log("Attempting a login with id", sessionId, "using email", emailAddress)
 		}
 	}
 }
 
-function cns(cb) { //create new session
-	var tEmit = jlc.beginAuthentication(fakeId, fakeAddress)
-	sendTheEmail( tEmit ) //waits for 'auth' to be emmitted
+function cns(cb) { //create new session, cb(err, api, token)
+	console.log('creating new session')
+	var emitter = jlc.beginAuthentication(fakeId, fakeAddress)
+	sendTheEmail( emitter ) //waits for 'auth' to be emmitted
 
-	tEmit.on('auth', function(obj) { //obj = {token, contactAddress}
-		cb(null, getFullApi(obj.token), obj.token) //obj.token = sessionId
+	emitter.on('auth', function(obj) {
+		console.log("'auth' emitted")
+		cb(null, getFullApi(obj.token), obj.token) //obj = {token, contactAddress}
 	})
 }
 
-function ces(sessionId, cb) { //continue existing session
+function ces(sessionId, cb) { //continue existing session, cb(err, api, token)
+	console.log('continuing old session: '+sessionId)
 	jlc.isAuthenticated(sessionId, function(err, addr) {
 		if (!err) {
 			cb(null, getFullApi(sessionId), sessionId)
 		} else { //wouldn't you want to run createNewSession here?
-			cb(new Error("Invalid session identification"))
+			var error = new Error("Invalid session identification")
+			cb()
 		}
 	})
 }
