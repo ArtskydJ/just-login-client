@@ -1,10 +1,9 @@
-
 //process.nextTick(function () { //instead of domready. seems to work?
 //setTimeout(function() {
 	var dnode = require('dnode')
 	//var domready = require('domready');
 	var shoe = require('shoe');
-	var d = dnode()
+	var d = dnode() //no listening!
 	var stream = shoe('/dnode');
 	d.on('remote', function (api) {
 		glob = api //allows me to run these functions in the browser console
@@ -38,6 +37,6 @@
 		//do not run d.end()!
 	})
 	d.pipe(stream).pipe(d);
-//}, 20)
+//}, 2000)
 //})
 

@@ -1,9 +1,11 @@
 var JustLoginCore = require('just-login-core')
 var level = require('level-mem')
-var jlc = JustLoginCore(level('idk'), function awfulGen() {
-	if (!iterator) iterator=0; //global >:(
-	return iterator+=1;
-})
+/*var jlc = JustLoginCore(level('idk'), function awfulGen() { //this breaks stuff, I DON'T KNOW WHY!!!
+	if (!window.iterator) window.iterator=0; //global >:(
+	window.iterator += 1
+	return window.iterator;
+})*/
+var jlc = JustLoginCore(level('idk'))
 var sendTheEmail = require('./emailWrapper.js')
 
 var fakeId = "LOLThisIsAFakeSessionId"
