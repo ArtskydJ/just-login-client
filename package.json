@@ -1,21 +1,18 @@
 {
-  "name": "objects-equal",
+  "name": "just-login-client",
   "version": "0.0.1",
   "main": "./index.js",
   "author": {
     "name": "ArtskydJ",
     "email": "josephdykstra@gmail.com"
   },
-  "description": "Checks if two objects have the same keys and properties",
+  "description": "Browser code for the just-login-core and just-login-emailer",
   "keywords": [
-    "object",
-	"equal",
-    "keys",
-	"properties"
+    "just login"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/ArtskydJ/objects-equal"
+    "url": "https://github.com/ArtskydJ/just-login-client"
   },
   "devDependencies": {
     "tap": "~0.4.8"
@@ -27,5 +24,7 @@
     "test": "tap ./test/*.js"
   },
   "dependencies": {
+    "level-mem": "^0.18.0",
+    "ractive": "^0.4.0"
   }
 }
