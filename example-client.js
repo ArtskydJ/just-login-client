@@ -1,6 +1,6 @@
 
-process.nextTick(function () { //instead of domready? seems to work...
-	console.log("build 005")
+//process.nextTick(function () { //instead of domready. seems to work?
+//setTimeout(function() {
 	var dnode = require('dnode')
 	//var domready = require('domready');
 	var shoe = require('shoe');
@@ -31,8 +31,13 @@ process.nextTick(function () { //instead of domready? seems to work...
 			fullApi.tryToLogIn('MORE PERSON@fake.com')
 		})
 
+		api.createNewSession(function(err, fullApi) {
+			fullApi.tryToLogIn('josephdykstra@gmail.com')
+		})
+
 		//do not run d.end()!
 	})
 	d.pipe(stream).pipe(d);
-});
+//}, 20)
+//})
 

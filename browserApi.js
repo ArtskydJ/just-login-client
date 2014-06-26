@@ -1,12 +1,15 @@
 var JustLoginCore = require('just-login-core')
 var level = require('level-mem')
-var jlc = JustLoginCore(level('idk'))
+var jlc = JustLoginCore(level('idk'), function awfulGen() {
+	if (!iterator) iterator=0; //global >:(
+	return iterator+=1;
+})
 var sendTheEmail = require('./emailWrapper.js')
 
 var fakeId = "LOLThisIsAFakeSessionId"
 var fakeAddress = "example@example.com"
 
-function getFullApi(sessionId) { //MOD THIS FUNCTION NOW!!!
+function getFullApi(sessionId) {
 	return {
 		tryToLogIn: function(emailAddress) {
 			console.log("Attempting a login with id", sessionId, "using email", emailAddress)
@@ -14,7 +17,7 @@ function getFullApi(sessionId) { //MOD THIS FUNCTION NOW!!!
 	}
 }
 
-function cns(cb) { //create new session, cb(err, api, token)
+function createNewSession(cb) { //cb(err, api, token)
 	console.log('creating new session')
 	var emitter = jlc.beginAuthentication(fakeId, fakeAddress)
 	sendTheEmail( emitter ) //waits for 'auth' to be emmitted
@@ -25,7 +28,7 @@ function cns(cb) { //create new session, cb(err, api, token)
 	})
 }
 
-function ces(sessionId, cb) { //continue existing session, cb(err, api, token)
+function continueExistingSession(sessionId, cb) { //cb(err, api, token)
 	console.log('continuing old session: '+sessionId)
 	jlc.isAuthenticated(sessionId, function(err, addr) {
 		if (!err) {
@@ -37,7 +40,7 @@ function ces(sessionId, cb) { //continue existing session, cb(err, api, token)
 	})
 }
 
-module.exports = { //dnode functions exposed to the browser
-	createNewSession: cns,
-	continueExistingSession: ces
+module.exports = { //Exposed to the browser via dnode
+	createNewSession: createNewSession,
+	continueExistingSession: continueExistingSession
 }
