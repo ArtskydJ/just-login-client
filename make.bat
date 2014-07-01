@@ -1,2 +1,2 @@
 time /t
-browserify example-client.js -o client-b.js
+browserify index.js -o index-b.js
