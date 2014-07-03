@@ -1,30 +1,54 @@
 var dnode = require('dnode')
 //var domready = require('domready');
 var shoe = require('shoe');
-var d = dnode() //no listening!
-var stream = shoe('/dnode');
+var stream = shoe('/dnode')
+var events = require('events')
 
-function init(cb) { //cb(api, session)
-	d.on('remote', function (serverApi) {
+var api = {
+	beginAuthentication: function() {},
+	isAuthenticated: function(cb) {cb(null, false)},
+	unauthenticate: function() {},
+}
+var d = dnode() //no listening, and do not run d.end()!
+d.on('remote', function (tempApi) {
+	api = tempApi //the api at the module's scope
+	console.log("yo found it!", api)
+	glob = api //allows me to run these functions in the browser console
+})
+d.pipe(stream).pipe(d);
 
-		glob = serverApi //allows me to run these functions in the browser console
-
-		serverApi.continueExistingSession(13, function(err, fullApi, sessionId) {
-			if (err && err.invalidSessionId) {
-				console.log("Whoops, bad session id attempt")
-				serverApi.createNewSession(function(err, fullApi, sessionId) {
-
-				})
-			}
-			else if (err)
-				console.log(err)
-
-		})
-
-
+function createSession(cb) { //cb(err, api, session)
+	//must get actual session id if existing, instead of hardcoded 13 below
+	api.continueExistingSession(13, function(err, fullApi, sessionId) {
+		if (err && err.invalidSessionId) { //bad session id attempt
+			api.createNewSession(cb)
+		}
+		else if (err)
+			cb(err)
+		else
+			cb(null, fullApi, sessionId)
 	})
-	d.pipe(stream).pipe(d);
-	//do not run d.end()!
+}
+
+var onLoginTimer = null
+var emitter = new events.EventEmitter()
+function onLogin() {
+	if (!onLoginTimer) {
+		onLoginTimer = setInterval(function() {
+			api.isAuthenticated(function(err, addr) {
+				if (!err && addr) {
+					clearInterval(onLoginTimer)
+					emitter.emit('login')
+				}
+			})
+		}, 1000)
+	}
+	return emitter
+}
+
+module.exports = {
+	createSession: createSession,
+	onLogin: onLogin
 }
 
 /*

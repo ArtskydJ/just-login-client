@@ -15,7 +15,7 @@
     "url": "https://github.com/ArtskydJ/just-login-client"
   },
   "devDependencies": {
-    "tap": "~0.4.8"
+    "tap": "^0.4.11"
   },
   "directories": {
     "test": "test"
