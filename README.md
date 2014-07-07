@@ -13,15 +13,15 @@ just-login-client
 
 This function handles remembering the session id in the browser's local storage.
 
-The callback has three arguments, `err`, `newApi`, and `sessionId`.
+The callback has three arguments: `err`, `newApi`, and `sessionId`.
 
-- `err` is obviously the error.
+- `err` is obviously the error, if there is one.
 - `newApi` is whatever was given from `continueExistingSession` or `createNewSession` in the api argument. For the coming example, the just-login-server-api is used, and is documented [here](https://github.com/ArtskydJ/just-login-server-api#api-methods).
 - `sessionId` is the new or previous (if applicable) session id.
 
 #Example
 
-Require everything
+Require everything:
 
 	var Jlc = require('just-login-core')
 	var Jlsa = require('just-login-server-api')
@@ -34,7 +34,7 @@ Set up a Just Login Server Api object with a Just Login Core object:
 	var jlc = Jlc(db)
 	var jlsa = Jlsa(jlc)
 
-Give the Api to the client
+Give the Api to the client:
 
 	createSession(jlsa, function (err, newApi, sessionId) {
 		if (!err) {
