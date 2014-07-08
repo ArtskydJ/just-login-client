@@ -15,6 +15,7 @@
     "url": "https://github.com/ArtskydJ/just-login-client"
   },
   "devDependencies": {
+    "node-localstorage": "^0.3.4",
     "tap": "^0.4.11"
   },
   "directories": {
