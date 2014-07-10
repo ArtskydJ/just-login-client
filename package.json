@@ -25,12 +25,5 @@
     "test": "tap ./test/*.js"
   },
   "dependencies": {
-    "dnode": "^1.2.0",
-    "domready": "^1.0.5",
-    "ecstatic": "^0.5.4",
-    "level-mem": "^0.18.0",
-    "ractive": "^0.4.0",
-    "router": "^0.6.2",
-    "shoe": "0.0.15"
   }
 }

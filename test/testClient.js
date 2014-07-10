@@ -4,7 +4,7 @@ var createSession = require('../index.js')
 if (typeof localStorage === "undefined" || localStorage === null) {
 	console.log("replacing localStorage")
 	var LocalStorage = require('node-localstorage').LocalStorage
-	localStorage = new LocalStorage('./scratch')
+	localStorage = new LocalStorage('./fakeLocalStorage')
 }
 
 var jlsid = "justLoginSessionId" //key
