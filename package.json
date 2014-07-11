@@ -25,5 +25,7 @@
     "test": "tap ./test/*.js"
   },
   "dependencies": {
+    "ractive": "^0.5.4",
+    "just-login-emailer": "^1.0.0"
   }
 }
