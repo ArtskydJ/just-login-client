@@ -10,7 +10,9 @@ function createSession(api, cb) { //cb(err, api, session)
 					cb(err)
 				} else {
 					localStorage.setItem("justLoginSessionId", sessionId)
-					emitter.emit('new session', sessionId)
+					process.nextTick(function() {
+						emitter.emit('new session', sessionId)
+					})
 
 					var timer = setInterval(function() {
 						fullApi.isAuthenticated(function(err, name) {
@@ -25,7 +27,9 @@ function createSession(api, cb) { //cb(err, api, session)
 				}
 			})
 		} else {
-			emitter.emit('continue session', sessionId)
+			process.nextTick(function() {
+				emitter.emit('continue session', sessionId)
+			})
 			cb(null, fullApi, sessionId)
 		}
 	})
