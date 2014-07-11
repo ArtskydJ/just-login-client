@@ -1,23 +1,35 @@
+var EventEmitter = require('events').EventEmitter
+
 function createSession(api, cb) { //cb(err, api, session)
 	var existing = localStorage.getItem("justLoginSessionId")
+	var emitter = new EventEmitter()
 	api.continueExistingSession(existing, function (err, fullApi, sessionId) {
-		if (err && err.invalidSessionId) { //bad session id attempt
-			api.createNewSession(function (err2, newFullApi, newSessionId){
-				localStorage.setItem("justLoginSessionId", newSessionId)
-				if (err2) {
-					err2.apiCns = true
-					cb(err2)
+		if (err) { //bad session id attempt
+			api.createNewSession(function (err, fullApi, sessionId) {
+				if (err) {
+					cb(err)
 				} else {
-					cb(null, newFullApi, newSessionId)
+					localStorage.setItem("justLoginSessionId", sessionId)
+					emitter.emit('new session', sessionId)
+
+					var timer = setInterval(function() {
+						fullApi.isAuthenticated(function(err, name) {
+							if (!err && name) {
+								emitter.emit('authenticated', true)
+								clearInterval(timer)
+							}
+						})
+					}, 2000)
+
+					cb(null, fullApi, sessionId)
 				}
 			})
-		}
-		else if (err)
-			err.apiCes = true
-			cb(err)
-		else
+		} else {
+			emitter.emit('continue session', sessionId)
 			cb(null, fullApi, sessionId)
+		}
 	})
+	return emitter
 }
 
 module.exports = createSession
