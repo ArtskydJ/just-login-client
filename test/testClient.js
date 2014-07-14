@@ -2,7 +2,6 @@ var test = require('tap').test
 var createSession = require('../index.js')
 
 if (typeof localStorage === "undefined" || localStorage === null) {
-	//console.log("replacing localStorage")
 	var LocalStorage = require('node-localstorage').LocalStorage
 	localStorage = new LocalStorage('./fakeLocalStorage')
 }
@@ -15,13 +14,8 @@ var fakeApi = {
 	continueExistingSession: function (get, cb) {
 		if (get == fakeSessionId) {
 			cb(null, fakeArgApi, fakeSessionId)
-		} else if (get == null) {
-			var err = new Error("u haz error")
-			err.invalidSessionId = true
-			//console.log("u haz errorz!")
-			cb(err)
 		} else {
-			cb(null)
+			cb(new Error("u haz error"))
 		}
 	},
 	createNewSession: function (cb) {
