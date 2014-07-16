@@ -1,39 +1,12 @@
-var EventEmitter = require('events').EventEmitter
+var Shoe = require('shoe')
+var Dnode = require('dnode')
+var createSession = require('./createSession.js')
 
-function createSession(api, cb) { //cb(err, api, session)
-	var existing = localStorage.getItem("justLoginSessionId")
-	var emitter = new EventEmitter()
-	api.continueExistingSession(existing, function (err, fullApi, sessionId) {
-		if (err) { //bad session id attempt
-			api.createNewSession(function (err, fullApi, sessionId) {
-				if (err) {
-					cb(err)
-				} else {
-					localStorage.setItem("justLoginSessionId", sessionId)
-					process.nextTick(function() {
-						emitter.emit('new session', sessionId)
-					})
-
-					var timer = setInterval(function() {
-						fullApi.isAuthenticated(function(err, name) {
-							if (!err && name) {
-								emitter.emit('authenticated', true)
-								clearInterval(timer)
-							}
-						})
-					}, 2000)
-
-					cb(null, fullApi, sessionId)
-				}
-			})
-		} else {
-			process.nextTick(function() {
-				emitter.emit('continue session', sessionId)
-			})
-			cb(null, fullApi, sessionId)
-		}
+module.exports = function client(cb) {
+	var stream = Shoe('/dnode')
+	var d = Dnode()
+	d.on('remote', function (api) {
+		window.emitter = createSession(api, cb)
 	})
-	return emitter
+	d.pipe(stream).pipe(d);
 }
-
-module.exports = createSession

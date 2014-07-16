@@ -1,25 +1,32 @@
 just-login-client
 =================
 
-#install
+- [Install](#install)
+- [Require](#require)
+- [client(api, cb)](#clientapi-cb)
+- [Events](#events)
+- [Example](#example)
+
+#Install
 
 	npm install just-login-client
 
-#require
+#Require
 
-	var createSession = require('just-login-client')
+	var client = require('just-login-client')
 
-#createSession(api, cb)
+#client(api, cb)
 
 This function handles remembering the session id in the browser's local storage.
 
-The callback has three arguments: `err`, `newApi`, and `sessionId`.
+- `cb` has three arguments: `err`, `newApi`, and `sessionId`.
+	- `err` is obviously the error, if there is one.
+	- `newApi` is whatever was given from `continueExistingSession` or `createNewSession` in the api argument. For the coming example, the just-login-server-api is used, and is documented [here](https://github.com/ArtskydJ/just-login-server-api#api-methods).
+	- `sessionId` is the new or previous (if applicable) session id.
 
-- `err` is obviously the error, if there is one.
-- `newApi` is whatever was given from `continueExistingSession` or `createNewSession` in the api argument. For the coming example, the just-login-server-api is used, and is documented [here](https://github.com/ArtskydJ/just-login-server-api#api-methods).
-- `sessionId` is the new or previous (if applicable) session id.
+#Events
 
-Also, createSession is an event emitter, and emits these events:
+Also, client sets window.emitter as an event emitter, and it emits these events:
 
 - `new session` This event is emitted if the browser did not have a previous session.
 - `continue session` This event is emitted if the browser did have a previous session, and it was successfully continued.
@@ -28,33 +35,44 @@ Also, createSession is an event emitter, and emits these events:
 
 #Example
 
-Require everything:
+Create a server:
 
 	var Jlc = require('just-login-core')
 	var Jlsa = require('just-login-server-api')
+	var http = require('http')
 	var level = require('level-mem')
-	var createSession = require('just-login-client')
-
-Set up a Just Login Server Api object with a Just Login Core object:
+	var shoe = require('shoe')
+	var dnode = require('dnode')
 
 	var db = level('uniqueNameHere')
 	var jlc = Jlc(db)
 	var jlsa = Jlsa(jlc)
 
-Give the Api to the client:
+	var server = http.createServer()
 
-	var emitter = createSession(jlsa, function (err, newApi, sessionId) {
+	var sock = shoe(function(stream) {
+		var d = dnode(jlsa)
+		d.pipe(stream).pipe(d)
+	})
+	sock.install(server, "/dnode")
+
+
+Create a client:
+
+	var client = require('just-login-client')
+
+	client(function (err, newApi, sessionId) {
 		if (!err) {
 			//do stuff with the api
 		}
 	})
 
-	emitter.on('new session', function (sessionId) {
+	window.emitter.on('new session', function (sessionId) {
 		console.log("Brand new, shiny session!", sessionId)
 	})
-	emitter.on('continue session', function (sessionId) {
+	window.emitter.on('continue session', function (sessionId) {
 		console.log("Reusing my session!", sessionId)
 	})
-	emitter.on('authenticated', function () {
+	window.emitter.on('authenticated', function () {
 		console.log("I'm ecstatic! I just got logged in!")
 	})
