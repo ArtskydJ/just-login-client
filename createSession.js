@@ -14,7 +14,7 @@ function createSession(api, emitter, cb) { //cb(err, api, session)
 					var timer = setInterval(function() {
 						fullApi.isAuthenticated(function(err, name) {
 							if (!err && name) {
-								emitter.emit('authenticated', true)
+								emitter.emit('authenticated', name)
 								clearInterval(timer)
 							}
 						})

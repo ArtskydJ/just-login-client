@@ -9,7 +9,8 @@ if (typeof localStorage === "undefined" || localStorage === null) {
 
 var jlsid = "justLoginSessionId" //key
 var fakeSessionId = "fakeSessionId" //value
-var fakeArgApi = {isAuthenticated: function (cb) {cb(null, "ex@mp.le")}}
+var fakeEmailAddress = "ex@mp.le"
+var fakeArgApi = {isAuthenticated: function (cb) {cb(null, fakeEmailAddress)}}
 var newSessionId = "newSessionId"
 var fakeApi = {
 	continueExistingSession: function (get, cb) {
@@ -25,7 +26,7 @@ var fakeApi = {
 }
 
 test('test createSession', function (t) {
-	t.plan(12)
+	t.plan(14)
 	localStorage.setItem(jlsid, fakeSessionId) //set the session id
 	t.equal(localStorage.getItem(jlsid), fakeSessionId, "localStorage works")
 	var tryContinue = new EventEmitter()
@@ -42,12 +43,15 @@ test('test createSession', function (t) {
 			t.notEqual(session, fakeSessionId, "sessionId must not be old") //creates session id
 			t.equal(session, newSessionId, "sessionId must be new")
 			t.equal(fakeArgApi, api, "these must be the same")
-			setTimeout(t.end.bind(t), 100)
+			setTimeout(t.end.bind(t), 3000) //must wait for authenticated event to be called
 		})
 
 		tryNew.on('new session', function() {t.ok(true, "created a new session")})
 		tryNew.on('continue session', function() {t.notOk(true, "did not continue an existing session")})
-		tryNew.on('authenticated', function() {t.ok(true, "got authenticated")})
+		tryNew.on('authenticated', function (whom) {
+			t.ok(true, "got authenticated")
+			t.equal(whom, fakeEmailAddress, "correct email")
+		})
 	})
 	tryContinue.on('new session', function (sessionId) {
 		t.notOk(true, "did not create a new session")
