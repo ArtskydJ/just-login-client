@@ -1,8 +1,5 @@
-var EventEmitter = require('events').EventEmitter
-
-function createSession(api, cb) { //cb(err, api, session)
+function createSession(api, emitter, cb) { //cb(err, api, session)
 	var existing = localStorage.getItem("justLoginSessionId")
-	var emitter = new EventEmitter()
 	api.continueExistingSession(existing, function (err, fullApi, sessionId) {
 		if (err) { //bad session id attempt
 			api.createNewSession(function (err, fullApi, sessionId) {
@@ -33,7 +30,6 @@ function createSession(api, cb) { //cb(err, api, session)
 			cb(null, fullApi, sessionId)
 		}
 	})
-	return emitter
 }
 
 module.exports = createSession

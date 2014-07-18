@@ -1,5 +1,6 @@
 var test = require('tap').test
 var createSession = require('../createSession.js')
+var EventEmitter = require('events').EventEmitter
 
 if (typeof localStorage === "undefined" || localStorage === null) {
 	var LocalStorage = require('node-localstorage').LocalStorage
@@ -27,14 +28,16 @@ test('test createSession', function (t) {
 	t.plan(12)
 	localStorage.setItem(jlsid, fakeSessionId) //set the session id
 	t.equal(localStorage.getItem(jlsid), fakeSessionId, "localStorage works")
-	var tryContinue = createSession(fakeApi, function (err, api, session) {
+	var tryContinue = new EventEmitter()
+	createSession(fakeApi, tryContinue, function (err, api, session) {
 		t.notOk(err, "no error")
 		t.equal(session, fakeSessionId, "sessionId must be old") //must retrieve session id
 		t.notEqual(session, newSessionId, "sessionId must not be new")
 		t.equal(fakeArgApi, api, "these must be the same")
 
 		localStorage.removeItem("justLoginSessionId") //delete the session id
-		var tryNew = createSession(fakeApi, function (err, api, session) {
+		var tryNew = new EventEmitter()
+		createSession(fakeApi, tryNew, function (err, api, session) {
 			t.notOk(err, "no error")
 			t.notEqual(session, fakeSessionId, "sessionId must not be old") //creates session id
 			t.equal(session, newSessionId, "sessionId must be new")
