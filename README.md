@@ -3,7 +3,7 @@ just-login-client
 
 - [Install](#install)
 - [Require](#require)
-- [client(api, cb)](#clientapi-cb)
+- [client(api, emitter, cb)](#clientapi-emitter-cb)
 - [Events](#events)
 - [Example](#example)
 
@@ -15,11 +15,13 @@ just-login-client
 
 	var client = require('just-login-client')
 
-#client(api, cb)
+#client(api, emitter, cb)
 
 This function handles remembering the session id in the browser's local storage.
 
-- `cb` has three arguments: `err`, `newApi`, and `sessionId`.
+- `api` is an object passed to `client()` that must have the functions, `createNewSession`, and `continueExistingSession`. For example, the [just-login-server-api](https://github.com/coding-in-the-wild/just-login-server-api#jlsa-methods).
+- `emitter` must be an event emitter. It will emit [these events](#events).
+- `cb` is a function that has the following arguments:
 	- `err` is obviously the error, if there is one.
 	- `newApi` is whatever was given from `continueExistingSession` or `createNewSession` in the api argument. For the coming example, the just-login-server-api is used, and is documented [here](https://github.com/ArtskydJ/just-login-server-api#api-methods).
 	- `sessionId` is the new or previous (if applicable) session id.
@@ -59,20 +61,21 @@ Create a server:
 
 Create a client:
 
+	var EventEmitter = require('events').EventEmitter
 	var client = require('just-login-client')
 
-	client(function (err, newApi, sessionId) {
+	var myEmitter = client(function (err, newApi, sessionId) {
 		if (!err) {
 			//do stuff with the api
 		}
 	})
 
-	window.emitter.on('new session', function (sessionId) {
+	myEmitter.on('new session', function (sessionId) {
 		console.log("Brand new, shiny session!", sessionId)
 	})
-	window.emitter.on('continue session', function (sessionId) {
+	myEmitter.on('continue session', function (sessionId) {
 		console.log("Reusing my session!", sessionId)
 	})
-	window.emitter.on('authenticated', function () {
+	myEmitter.on('authenticated', function () {
 		console.log("I'm ecstatic! I just got logged in!")
 	})
