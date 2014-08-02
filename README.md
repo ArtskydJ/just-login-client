@@ -19,20 +19,24 @@ just-login-client
 
 This function handles remembering the session id in the browser's local storage.
 
-- `api` is an object passed to `client()` that must have the functions, `createNewSession`, and `continueExistingSession`. For example, the [just-login-server-api](https://github.com/coding-in-the-wild/just-login-server-api#jlsa-methods).
-- `emitter` must be an event emitter. It will emit [these events](#events).
+###Arguments:
+
+- `dnodeEndpoint` is a string for the endpoint that dnode uses for communication. This argument optional, and defaults to "/dnode".
 - `cb` is a function that has the following arguments:
 	- `err` is obviously the error, if there is one.
-	- `newApi` is whatever was given from `continueExistingSession` or `createNewSession` in the api argument. For the coming example, the just-login-server-api is used, and is documented [here](https://github.com/ArtskydJ/just-login-server-api#api-methods).
-	- `sessionId` is the new or previous (if applicable) session id.
+	- `newApi` is documented [here](https://github.com/ArtskydJ/just-login-server-api#api-methods).
+	- `sessionId` is the new (or previous, when applicable) session id.
+
+###Returns:
+An event emitter which emits the [events below](#events).
 
 #Events
 
 Also, client sets window.emitter as an event emitter, and it emits these events:
 
-- `new session` This event is emitted if the browser did not have a previous session.
-- `continue session` This event is emitted if the browser did have a previous session, and it was successfully continued.
-- `authenticated` This event is emitted when the user gets authenticated. It only gets emitted on a new session.
+- `new session` is emitted if the browser did not have a previous session. Emits the session id of the user who logged in.
+- `continue session` is emitted if the browser did have a previous session, and it was successfully continued. Emits the session id of the user who logged in.
+- `authenticated` is emitted when the user gets authenticated. It only gets emitted on a new session. Emits the email of the user who logged in.
 
 
 #Example
@@ -61,7 +65,6 @@ Create a server:
 
 Create a client:
 
-	var EventEmitter = require('events').EventEmitter
 	var client = require('just-login-client')
 
 	var myEmitter = client(function (err, newApi, sessionId) {
