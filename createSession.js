@@ -30,7 +30,10 @@ function createSession(api, emitter, cb) { //cb(err, api, session)
 				} else {
 					localStorage.setItem("justLoginSessionId", sessionId)
 					process.nextTick(function() {
-						emitter.emit('new session', sessionId)
+						emitter.emit('session', {
+							sessionId: sessionId,
+							continued: false
+						})
 					})
 
 					beginWatchingForAuthentication(fullApi)
@@ -40,7 +43,10 @@ function createSession(api, emitter, cb) { //cb(err, api, session)
 			})
 		} else {
 			process.nextTick(function() {
-				emitter.emit('continue session', sessionId)
+				emitter.emit('session', {
+					sessionId: sessionId,
+					continued: true
+				})
 			})
 			cb(null, overwriteBeginAuthentication(fullApi, beginWatchingForAuthentication), sessionId)
 		}

@@ -34,10 +34,20 @@ An event emitter which emits the [events below](#events).
 
 Also, client sets window.emitter as an event emitter, and it emits these events:
 
-- `new session` is emitted if the browser did not have a previous session. Emits the session id of the user who logged in.
-- `continue session` is emitted if the browser did have a previous session, and it was successfully continued. Emits the session id of the user who logged in.
+- `session` is emitted when a session is initiated. An object is emitted with the following properties:
+	- `sessionId` The session id of the newly connected session
+	- `continued` Whether or not the session was continued from a previous session.
 - `authenticated` is emitted when the user gets authenticated. It only gets emitted on a new session. Emits the email of the user who logged in.
 
+	emitter.on('session', function (data) {
+		console.log(data.continued) //boolean for if the session was continued or newly created
+		console.log(data.sessionId) //string for the session id
+	})
+
+	emitter.on('authenticated', function (whom) {
+		t.ok(whom, "got authenticated")
+		t.equal(whom, fakeEmailAddress, "correct email (new)")
+	})
 
 #Example
 
