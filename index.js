@@ -9,7 +9,7 @@ module.exports = function client(dnodeEndpoint, cb) {
 		dnodeEndpoint = "/dnode"               //...set the endpoint as a string
 	}
 	var emitter = new EventEmitter()
-	var stream = Shoe()
+	var stream = Shoe(dnodeEndpoint)
 	var d = Dnode()
 	d.on('remote', function (api) {
 		createSession(api, emitter, cb)

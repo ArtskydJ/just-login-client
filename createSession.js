@@ -41,10 +41,18 @@ function createSession(api, emitter, cb) { //cb(err, api, session)
 					cb(null, overwriteBeginAuthentication(fullApi, beginWatchingForAuthentication), sessionId)
 				}
 			})
-		} else {
+		} else { //good session id attempt
 			process.nextTick(function() {
 				emitter.emit('session', {
-					sessionId: sessionId,
+					sessionId: sessionId, // I think this should this be named
+					                      // `id` because people will probably
+					                      // call this object `session`, and
+					                      // because `continued` is not named
+					                      // `sessionContinued`. Feel free to
+					                      // delete this eyesore of a comment
+					                      // after we decide whether or not to
+					                      // make our naming scheme somewhat
+					                      // consistent. That's all. -Joseph D.
 					continued: true
 				})
 			})
