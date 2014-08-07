@@ -54,10 +54,12 @@ test('create a new session with createSession', function (t) {
 test('continue an existing session with createSession', function (t) {
 	t.plan(7)
 
-	localStorage.setItem(localStorageKey, fakeExistingSessionId) //set the session id
+	localStorage.setItem("keepDatabaseFromBecomingEmpty", fakeExistingSessionId) //set the session id
 	t.equal(localStorage.getItem(localStorageKey), fakeExistingSessionId, "localStorage works")
 
 	var emitter = new EventEmitter()
+
+	localStorage.setItem(localStorageKey, fakeExistingSessionId) //set the session id
 
 	createSession(fakeApi, emitter, function (err, api, session) {
 		t.notOk(err, "no error")
@@ -65,7 +67,7 @@ test('continue an existing session with createSession', function (t) {
 		t.notEqual(fakeNewSessionId, session, "sessionId must not be new")
 		t.notEqual(fakeArgApi, api, "these must be the different because of overwriteBeginAuthentication()") //changed from .equal to .deepEqual 20140802
 
-		localStorage.removeItem("justLoginSessionId") //delete the session id
+		localStorage.removeItem(localStorageKey) //delete the session id
 		setTimeout(t.end.bind(t), 2010) //must wait for authenticated event to be called
 	})
 
