@@ -3,7 +3,7 @@ just-login-client
 
 - [Install](#install)
 - [Require](#require)
-- [client([dnodeEndpoint,] cb)](#clientdnodeEndpoint-cb)
+- [client([dnodeEndpoint,] cb)](#clientdnodeendpoint-cb)
 - [Events](#events)
 - [Example](#example)
 
@@ -27,21 +27,21 @@ This function handles remembering the session id in the browser's local storage.
 
 - `dnodeEndpoint` is a string for the endpoint that dnode uses for communication. This argument optional, and defaults to "/dnode".
 - `cb` is a function that has the following arguments:
-	- `err` is obviously the error, if there is one.
+	- `err` is either `null` or an `Error` object.
 	- `newApi` is documented [here](https://github.com/ArtskydJ/just-login-server-api#api-methods).
 	- `sessionId` is the new (or previous, when applicable) session id.
 
 ###Returns:
-An event emitter which emits the [events below](#events).
+An event emitter which can emit the [events](#events) shown below.
 
 #Events
 
 Also, client sets window.emitter as an event emitter, and it emits these events:
 
 - `session` is emitted when a session is initiated. An object is emitted with the following properties:
-	- `sessionId` The session id of the newly connected session. E.g. `1234567890abcdef1234567890abcdef`
+	- `sessionId` The id for the current session. E.g. `3879533A-1F34-11E4-A8DE-C92C3319C4E0`
 	- `continued` Whether or not the session was continued from a previous session. E.g. `true`, `false`
-- `authenticated` is emitted when the user gets authenticated. It only gets emitted on a new session. Emits the email of the user who logged in.
+- `authenticated` is emitted when the user gets authenticated. It only gets emitted on a new session. Emits the email of the user who logged in. E.g. `you@youremail.com`
 
 ```js
 emitter.on('session', function (data) {
