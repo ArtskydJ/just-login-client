@@ -25,7 +25,7 @@ This function handles remembering the session id in the browser's local storage.
 
 ###Arguments:
 
-- `dnodeEndpoint` is a string for the endpoint that dnode uses for communication. This argument optional, and defaults to "/dnode".
+- `dnodeEndpoint` is a string for the endpoint that dnode uses for communication. This argument is optional, and defaults to `"/dnode"`. The string must start with a forward slash `/`.
 - `cb` is a function that has the following arguments:
 	- `err` is either `null` or an `Error` object.
 	- `newApi` is documented [here](https://github.com/ArtskydJ/just-login-server-api#api-methods).
