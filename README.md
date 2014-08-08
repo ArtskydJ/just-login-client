@@ -3,19 +3,23 @@ just-login-client
 
 - [Install](#install)
 - [Require](#require)
-- [client(api, emitter, cb)](#clientapi-emitter-cb)
+- [client([dnodeEndpoint,] cb)](#clientdnodeEndpoint-cb)
 - [Events](#events)
 - [Example](#example)
 
 #Install
 
+Install with npm
+
 	npm install just-login-client
 
 #Require
 
-	var client = require('just-login-client')
+```js
+var client = require('just-login-client')
+```
 
-#client(api, emitter, cb)
+#client([dnodeEndpoint,] cb)
 
 This function handles remembering the session id in the browser's local storage.
 
@@ -35,60 +39,65 @@ An event emitter which emits the [events below](#events).
 Also, client sets window.emitter as an event emitter, and it emits these events:
 
 - `session` is emitted when a session is initiated. An object is emitted with the following properties:
-	- `sessionId` The session id of the newly connected session
-	- `continued` Whether or not the session was continued from a previous session.
+	- `sessionId` The session id of the newly connected session. E.g. `1234567890abcdef1234567890abcdef`
+	- `continued` Whether or not the session was continued from a previous session. E.g. `true`, `false`
 - `authenticated` is emitted when the user gets authenticated. It only gets emitted on a new session. Emits the email of the user who logged in.
 
-	emitter.on('session', function (data) {
-		console.log(data.continued) //boolean for if the session was continued or newly created
-		console.log(data.sessionId) //string for the session id
-	})
+```js
+emitter.on('session', function (data) {
+	console.log(data.continued) //boolean for if the session was continued or newly created
+	console.log(data.sessionId) //string for the session id
+})
 
-	emitter.on('authenticated', function (whom) {
-		t.ok(whom, "got authenticated")
-		t.equal(whom, fakeEmailAddress, "correct email (new)")
-	})
+emitter.on('authenticated', function (whom) {
+	t.ok(whom, "got authenticated")
+	t.equal(whom, fakeEmailAddress, "correct email (new)")
+})
+```
 
 #Example
 
 Create a server:
 
-	var Jlc = require('just-login-core')
-	var Jlsa = require('just-login-server-api')
-	var http = require('http')
-	var level = require('level-mem')
-	var shoe = require('shoe')
-	var dnode = require('dnode')
+```js
+var Jlc = require('just-login-core')
+var Jlsa = require('just-login-server-api')
+var http = require('http')
+var level = require('level-mem')
+var shoe = require('shoe')
+var dnode = require('dnode')
 
-	var db = level('uniqueNameHere')
-	var jlc = Jlc(db)
-	var jlsa = Jlsa(jlc)
+var db = level('uniqueNameHere')
+var jlc = Jlc(db)
+var jlsa = Jlsa(jlc)
 
-	var server = http.createServer()
+var server = http.createServer()
 
-	var sock = shoe(function(stream) {
-		var d = dnode(jlsa)
-		d.pipe(stream).pipe(d)
-	})
-	sock.install(server, "/dnode")
-
+var sock = shoe(function(stream) {
+	var d = dnode(jlsa)
+	d.pipe(stream).pipe(d)
+})
+sock.install(server, "/dnode-example")
+```
 
 Create a client:
 
-	var client = require('just-login-client')
+```js
+var client = require('just-login-client')
 
-	var myEmitter = client(function (err, newApi, sessionId) {
-		if (!err) {
-			//do stuff with the api
-		}
-	})
+var myEmitter = client("/dnode-example", function (err, newApi, sessionId) {
+	if (!err) {
+		//do stuff with the api
+	}
+})
 
-	myEmitter.on('new session', function (sessionId) {
-		console.log("Brand new, shiny session!", sessionId)
-	})
-	myEmitter.on('continue session', function (sessionId) {
-		console.log("Reusing my session!", sessionId)
-	})
-	myEmitter.on('authenticated', function () {
-		console.log("I'm ecstatic! I just got logged in!")
-	})
+myEmitter.on('new session', function (sessionId) {
+	console.log("Brand new, shiny session!", sessionId)
+})
+myEmitter.on('continue session', function (sessionId) {
+	console.log("Reusing my session!", sessionId)
+})
+myEmitter.on('authenticated', function () {
+	console.log("I'm ecstatic! I just got logged in!")
+})
+```
