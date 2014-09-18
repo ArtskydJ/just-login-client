@@ -54,12 +54,12 @@ test('create a new session with createSession', function (t) {
 test('continue an existing session with createSession', function (t) {
 	t.plan(7)
 
-	localStorage.setItem("keepDatabaseFromBecomingEmpty", fakeExistingSessionId) //set the session id
+	localStorage.setItem(localStorageKey, fakeExistingSessionId) //set the session id
 	t.equal(localStorage.getItem(localStorageKey), fakeExistingSessionId, "localStorage works")
 
 	var emitter = new EventEmitter()
 
-	localStorage.setItem(localStorageKey, fakeExistingSessionId) //set the session id
+	localStorage.setItem("keepDatabaseFromBecomingEmpty", fakeExistingSessionId)
 
 	createSession(fakeApi, emitter, function (err, api, session) {
 		t.notOk(err, "no error")
