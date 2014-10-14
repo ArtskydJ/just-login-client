@@ -1,6 +1,6 @@
 {
   "name": "just-login-client",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "main": "./index.js",
   "author": {
     "name": "ArtskydJ",
@@ -25,7 +25,6 @@
     "test": "tap ./test/*.js"
   },
   "dependencies": {
-    "ractive": "^0.5.4",
     "shoe": "0.0.15",
     "dnode": "^1.2.0"
   }
