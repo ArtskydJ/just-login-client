@@ -1,54 +1,54 @@
-function overwriteBeginAuthentication(fullApi, beginWatchingForAuthentication) {
+function emitIfAuthenticated(emitter, fullApi, cb) {
+	fullApi.isAuthenticated(function (err, name) {
+		if (!err && name) {
+			emitter.emit('authenticated', name)
+			cb && cb()
+		}
+	})
+}
+
+function beginWatchingForAuthentication(emitter, fullApi) {
+	var timer = setInterval(function() {
+		emitIfAuthenticated(emitter, fullApi, clearInterval.bind(null, timer) )
+	}, 2000)
+}
+
+function overwriteBeginAuthentication(emitter, fullApi) {
 	var exposedApi = Object.create(fullApi)
 	exposedApi.beginAuthentication = function beginAuthentication(emailAddress, cb) {
-		beginWatchingForAuthentication(fullApi)
+		beginWatchingForAuthentication(emitter, fullApi)
 		fullApi.beginAuthentication(emailAddress, cb)
 	}
 	return exposedApi
 }
 
-function createSession(api, emitter, cb) { //cb(err, api, session)
-	var existing = localStorage.getItem("justLoginSessionId")
-
-	var beginWatchingForAuthentication = function beginWatchingForAuthentication(fullApi) {
-		var timer = setInterval(function() {
-			fullApi.isAuthenticated(function(err, name) {
-				if (!err && name) {
-					emitter.emit('authenticated', name)
-					clearInterval(timer)
-				}
+function end(err, continued, emitter, fullApi, sessionId, cb) {
+	if (err) {
+		cb(err)
+	} else {
+		if (!continued) {
+			localStorage.setItem("justLoginSessionId", sessionId)
+		}
+		process.nextTick(function() {
+			emitter.emit('session', {
+				sessionId: sessionId,
+				continued: continued
 			})
-		}, 2000)
+		})
+		cb(null, overwriteBeginAuthentication(emitter, fullApi), sessionId)
 	}
+}
 
-	api.continueExistingSession(existing, function (err, fullApi, sessionId) {
+function createSession(api, emitter, cb) { //cb(err, api, session)
+	var existingSessionId = localStorage.getItem("justLoginSessionId")
 
-		if (err) { //bad session id attempt
+	api.continueExistingSession(existingSessionId, function (err, fullApi, sessionId) {
+		if (!err) { //good session id attempt
+			end(null, true, emitter, fullApi, sessionId, cb)
+		} else { //bad session id attempt
 			api.createNewSession(function (err, fullApi, sessionId) {
-				if (err) {
-					cb(err)
-				} else {
-					localStorage.setItem("justLoginSessionId", sessionId)
-					process.nextTick(function() {
-						emitter.emit('session', {
-							sessionId: sessionId,
-							continued: false
-						})
-					})
-
-					beginWatchingForAuthentication(fullApi)
-
-					cb(null, overwriteBeginAuthentication(fullApi, beginWatchingForAuthentication), sessionId)
-				}
+				end(err, false, emitter, fullApi, sessionId, cb)
 			})
-		} else { //good session id attempt
-			process.nextTick(function() {
-				emitter.emit('session', {
-					sessionId: sessionId,
-					continued: true
-				})
-			})
-			cb(null, overwriteBeginAuthentication(fullApi, beginWatchingForAuthentication), sessionId)
 		}
 	})
 }
