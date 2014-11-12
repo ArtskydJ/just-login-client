@@ -42,11 +42,11 @@ function end(err, continued, emitter, fullApi, sessionId, cb) {
 function createSession(api, emitter, cb) { //cb(err, api, session)
 	var existingSessionId = localStorage.getItem("justLoginSessionId")
 
-	api.continueExistingSession(existingSessionId, function (err, fullApi, sessionId) {
+	api.continueSession(existingSessionId, function (err, fullApi, sessionId) {
 		if (!err) { //good session id attempt
 			end(null, true, emitter, fullApi, sessionId, cb)
 		} else { //bad session id attempt
-			api.createNewSession(function (err, fullApi, sessionId) {
+			api.createSession(function (err, fullApi, sessionId) {
 				end(err, false, emitter, fullApi, sessionId, cb)
 			})
 		}

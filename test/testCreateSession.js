@@ -1,6 +1,6 @@
 var test = require('tap').test
 var EventEmitter = require('events').EventEmitter
-var createSession = require('../createSession.js')
+var establishSession = require('../createSession.js')
 
 if (process) { //if running in node
 	var LocalStorage = require('node-localstorage').LocalStorage
@@ -9,28 +9,32 @@ if (process) { //if running in node
 
 var localStorageKey = "justLoginSessionId" //key
 var fakeExistingSessionId = "fake-existing-session-identification" //value
-var fakeEmailAddress = "ex@mp.le"
-var fakeArgApi = {isAuthenticated: function (cb) {cb(null, fakeEmailAddress)}}
 var fakeNewSessionId = "newSessionId"
+var fakeEmailAddress = "ex@mp.le"
+var fakeArgApi = {
+	isAuthenticated: function (cb) {
+		cb(null, fakeEmailAddress)
+	}
+}
 var fakeApi = {
-	continueExistingSession: function (get, cb) {
+	continueSession: function (get, cb) {
 		if (get === fakeExistingSessionId) {
 			cb(null, fakeArgApi, fakeExistingSessionId)
 		} else {
 			cb(new Error("u haz error"))
 		}
 	},
-	createNewSession: function (cb) {
+	createSession: function (cb) {
 		cb(null, fakeArgApi, fakeNewSessionId)
 	}
 }
 
 
-test('create a new session with createSession', function (t) {
+test('create a new session with establishSession', function (t) {
 	t.plan(8)
 	var emitter = new EventEmitter()
 	
-	createSession(fakeApi, emitter, function (err, api, session) {
+	establishSession(fakeApi, emitter, function (err, api, session) {
 		t.notOk(err, "no error")
 		t.notEqual(session, fakeExistingSessionId, "sessionId must not be old") //creates session id
 		t.equal(session, fakeNewSessionId, "sessionId must be new")
@@ -51,7 +55,7 @@ test('create a new session with createSession', function (t) {
 	})
 })
 
-test('continue an existing session with createSession', function (t) {
+test('continue an existing session with establishSession', function (t) {
 	t.plan(7)
 
 	localStorage.setItem(localStorageKey, fakeExistingSessionId) //set the session id
@@ -61,7 +65,7 @@ test('continue an existing session with createSession', function (t) {
 
 	localStorage.setItem("keepDatabaseFromBecomingEmpty", fakeExistingSessionId)
 
-	createSession(fakeApi, emitter, function (err, api, session) {
+	establishSession(fakeApi, emitter, function (err, api, session) {
 		t.notOk(err, "no error")
 		t.equal(fakeExistingSessionId, session, "sessionId must be old") //must retrieve session id
 		t.notEqual(fakeNewSessionId, session, "sessionId must not be new")
