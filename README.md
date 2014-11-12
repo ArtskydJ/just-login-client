@@ -60,44 +60,43 @@ emitter.on('authenticated', function (whom) {
 Create a server:
 
 ```js
-var Jlc = require('just-login-core')
-var Jlsa = require('just-login-server-api')
+var JustLoginCore = require('just-login-core')
+var JustLoginSessionManager = require('just-login-example-session-manager')
 var http = require('http')
-var level = require('level-mem')
+var level = require('level')
 var shoe = require('shoe')
 var dnode = require('dnode')
 
-var db = level('uniqueNameHere')
-var jlc = Jlc(db)
-var jlsa = Jlsa(jlc)
-
+var db = level('./databases/core')
+var core = JustLoginCore(db)
+var sessionManager = JustLoginSessionManager(core)
 var server = http.createServer()
 
-var sock = shoe(function(stream) {
-	var d = dnode(jlsa)
+shoe(function(stream) {
+	var d = dnode(sessionManager)
 	d.pipe(stream).pipe(d)
-})
-sock.install(server, "/dnode-example")
+}).install(server, "/dnode-example")
 ```
 
 Create a client:
 
 ```js
-var client = require('just-login-client')
+var justLoginClient = require('just-login-client')
 
-var myEmitter = client("/dnode-example", function (err, newApi, sessionId) {
+var client = justLoginClient("/dnode-example", function (err, newApi, sessionId) {
 	if (!err) {
 		//do stuff with the api
 	}
 })
 
-myEmitter.on('new session', function (sessionId) {
-	console.log("Brand new, shiny session!", sessionId)
+client.on('session', function (session) {
+	if (session.continued) {
+		console.log("Reusing my session:", session.sessionId)
+	} else {
+		console.log("New session:", session.sessionId)
+	}
 })
-myEmitter.on('continue session', function (sessionId) {
-	console.log("Reusing my session!", sessionId)
-})
-myEmitter.on('authenticated', function () {
-	console.log("I'm ecstatic! I just got logged in!")
+client.on('authenticated', function (email) {
+	console.log("I'm ecstatic! ' + email +' just got logged in!")
 })
 ```
