@@ -6,6 +6,7 @@
     "name": "ArtskydJ",
     "email": "josephdykstra@gmail.com"
   },
+  "license": "VOL",
   "description": "Browser code for the just-login-core and just-login-emailer",
   "keywords": [
     "just login"
