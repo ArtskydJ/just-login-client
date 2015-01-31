@@ -1,12 +1,6 @@
 just-login-client
 =================
 
-- [Install](#install)
-- [Require](#require)
-- [client([dnodeEndpoint,] cb)](#clientdnodeendpoint-cb)
-- [Events](#events)
-- [Example](#example)
-
 #Install
 
 Install with npm
