@@ -100,3 +100,7 @@ client.on('authenticated', function (email) {
 	console.log("I'm ecstatic! ' + email +' just got logged in!")
 })
 ```
+
+#License
+
+[VOL](http://veryopenlicense.com/)
