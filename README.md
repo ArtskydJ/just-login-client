@@ -91,7 +91,7 @@ client.on('session', function (session) {
 	}
 })
 client.on('authenticated', function (email) {
-	console.log("I'm ecstatic! ' + email +' just got logged in!")
+	console.log("I'm ecstatic! " + email + " just got logged in!")
 })
 ```
 
