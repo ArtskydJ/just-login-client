@@ -1,23 +1,25 @@
 just-login-client
 =================
 
-#Install
+[![Build Status](https://travis-ci.org/coding-in-the-wild/just-login-client.svg)](https://travis-ci.org/coding-in-the-wild/just-login-client)
+
+# Install
 
 Install with npm
 
 	npm install just-login-client
 
-#Require
+# Require
 
 ```js
 var client = require('just-login-client')
 ```
 
-#client([dnodeEndpoint,] cb)
+# client([dnodeEndpoint,] cb)
 
 This function handles remembering the session id in the browser's local storage.
 
-###Arguments:
+### Arguments:
 
 - `dnodeEndpoint` is a string for the endpoint that dnode uses for communication. This argument is optional, and defaults to `"/dnode"`. The string must start with a forward slash `/`.
 - `cb` is a function that has the following arguments:
@@ -25,10 +27,10 @@ This function handles remembering the session id in the browser's local storage.
 	- `newApi` is documented [here](https://github.com/ArtskydJ/just-login-server-api#api-methods).
 	- `sessionId` is the new (or previous, when applicable) session id.
 
-###Returns:
+### Returns:
 An event emitter which can emit the [events](#events) shown below.
 
-#Events
+# Events
 
 Also, client sets window.emitter as an event emitter, and it emits these events:
 
@@ -49,7 +51,7 @@ emitter.on('authenticated', function (whom) {
 })
 ```
 
-#Example
+# Example
 
 Create a server:
 
@@ -95,6 +97,6 @@ client.on('authenticated', function (email) {
 })
 ```
 
-#License
+# License
 
 [VOL](http://veryopenlicense.com/)
