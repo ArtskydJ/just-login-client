@@ -22,35 +22,33 @@ function overwriteBeginAuthentication(emitter, fullApi) {
 	return exposedApi
 }
 
-function end(err, continued, emitter, fullApi, sessionId, cb) {
-	if (err) {
-		cb(err)
-	} else {
-		if (!continued) {
-			localStorage.setItem('justLoginSessionId', sessionId)
-		}
-		process.nextTick(function() {
-			emitter.emit('session', {
-				sessionId: sessionId,
-				continued: continued
-			})
+function end(emitter, fullApi, sessionId, continued, cb) {
+	process.nextTick(function() {
+		emitter.emit('session', {
+			sessionId: sessionId,
+			continued: continued
 		})
-		cb(null, overwriteBeginAuthentication(emitter, fullApi), sessionId)
-	}
+	})
+	cb(null, overwriteBeginAuthentication(emitter, fullApi), sessionId)
 }
 
-function createSession(api, emitter, cb) { //cb(err, api, session)
+function acquireSession(api, emitter, cb) { //cb(err, api, session)
 	var existingSessionId = localStorage.getItem('justLoginSessionId')
 
 	api.continueSession(existingSessionId, function (err, fullApi, sessionId) {
 		if (!err) { //good session id attempt
-			end(null, true, emitter, fullApi, sessionId, cb)
+			end(emitter, fullApi, sessionId, true, cb)
 		} else { //bad session id attempt
-			api.createSession(function (err, fullApi, sessionId) {
-				end(err, false, emitter, fullApi, sessionId, cb)
+			api.createSession(function (err, fullApi, newSessionId) {
+				if (err) {
+					cb(err)
+				} else {
+					localStorage.setItem('justLoginSessionId', newSessionId)
+					end(emitter, fullApi, newSessionId, false, cb)
+				}
 			})
 		}
 	})
 }
 
-module.exports = createSession
+module.exports = acquireSession
