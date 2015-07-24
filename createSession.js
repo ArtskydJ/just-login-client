@@ -27,7 +27,7 @@ function end(err, continued, emitter, fullApi, sessionId, cb) {
 		cb(err)
 	} else {
 		if (!continued) {
-			localStorage.setItem("justLoginSessionId", sessionId)
+			localStorage.setItem('justLoginSessionId', sessionId)
 		}
 		process.nextTick(function() {
 			emitter.emit('session', {
@@ -40,7 +40,7 @@ function end(err, continued, emitter, fullApi, sessionId, cb) {
 }
 
 function createSession(api, emitter, cb) { //cb(err, api, session)
-	var existingSessionId = localStorage.getItem("justLoginSessionId")
+	var existingSessionId = localStorage.getItem('justLoginSessionId')
 
 	api.continueSession(existingSessionId, function (err, fullApi, sessionId) {
 		if (!err) { //good session id attempt
