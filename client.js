@@ -8,7 +8,6 @@ module.exports = function client(dnodeEndpoint, cb) {
 	var stream = shoe(dnodeEndpoint)
 	var d = dnode()
 	d.on('remote', function (api) {
-		console.log(Object.keys(api))
 		createSession(api, emitter, cb)
 	})
 	d.pipe(stream).pipe(d)
