@@ -1,4 +1,4 @@
-var Shoe = require('shoe')
+var shoe = require('shoe')
 var dnode = require('dnode')
 
 module.exports = function srv(core, sessionState) {
@@ -11,10 +11,10 @@ module.exports = function srv(core, sessionState) {
 		unauthenticate: sessionState.unauthenticate //.bind(null, sessionId)
 	}
 
-	var shoe = Shoe(function (stream) { //Basic authentication api
+	var sock = shoe(function (stream) { //Basic authentication api
 		var d = dnode(clientApi)
 		d.pipe(stream).pipe(d)
 	})
 
-	return shoe
+	return sock
 }
