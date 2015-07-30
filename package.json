@@ -21,7 +21,7 @@
     "dnode": "^1.2.0"
   },
   "devDependencies": {
-    "node-localstorage": "^0.3.4",
+    "mock-dom-storage": "^1.0.0",
     "tap": "^0.4.11"
   },
   "directories": {
