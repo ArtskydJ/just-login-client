@@ -80,10 +80,11 @@ This function handles remembering the session id in the browser's local storage.
 	- `newApi` is documented [here](https://github.com/ArtskydJ/just-login-server-api#api-methods).
 	- `sessionId` is the new (or previous, when applicable) session id.
 - **Returns** `emitter` which can emit the following events:
-	- `session(sessionId, continued)` is emitted when a session is initiated. An object is emitted with the following properties:
+	- `session` is emitted when a session is initiated. An object is emitted with the following properties:
 		- `sessionId` The id for the current session. E.g. `3879533a-1f34-11e4-a8de-c92c3319c4e0`
 		- `continued` Whether or not the session was continued from a previous session. E.g. `true`, `false`
-	- `authenticated(email)` is emitted when the user gets authenticated. Emits the email of the user who logged in. E.g. `you@youremail.com`
+	- `authenticated` is emitted when the user gets authenticated.
+		- `email` is the email of the user who logged in. E.g. `you@youremail.com`
 
 ```js
 emitter.on('session', function (data) {
