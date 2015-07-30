@@ -29,22 +29,23 @@ function end(emitter, fullApi, sessionId, continued, cb) {
 			continued: continued
 		})
 	})
-	cb(null, overwriteBeginAuthentication(emitter, fullApi), sessionId)
+	var exposedApi = overwriteBeginAuthentication(emitter, fullApi)
+	cb(null, exposedApi, sessionId)
 }
 
 function acquireSession(api, emitter, cb) { //cb(err, api, session)
 	var existingSessionId = localStorage.getItem('justLoginSessionId')
 
-	api.continueSession(existingSessionId, function (err, fullApi, sessionId) {
-		if (!err) { //good session id attempt
-			end(emitter, fullApi, sessionId, true, cb)
+	api.sessionExists(existingSessionId, function (err, date) {
+		if (!err && date) { //good session id attempt
+			end(emitter, api, existingSessionId, true, cb)
 		} else { //bad session id attempt
-			api.createSession(function (err, fullApi, newSessionId) {
+			api.createSession(function (err, newSessionId) {
 				if (err) {
 					cb(err)
 				} else {
 					localStorage.setItem('justLoginSessionId', newSessionId)
-					end(emitter, fullApi, newSessionId, false, cb)
+					end(emitter, api, newSessionId, false, cb)
 				}
 			})
 		}
