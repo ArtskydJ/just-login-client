@@ -36,18 +36,24 @@ function end(emitter, fullApi, sessionId, continued, cb) {
 function acquireSession(api, emitter, cb) { //cb(err, api, session)
 	var existingSessionId = localStorage.getItem('justLoginSessionId')
 
-	api.sessionExists(existingSessionId, function (err, date) {
-		if (!err && date) { //good session id attempt
-			end(emitter, api, existingSessionId, true, cb)
-		} else { //bad session id attempt
+	api.getFullApi(existingSessionId, function (err, fullApi) {
+		if (err) {
 			api.createSession(function (err, newSessionId) {
 				if (err) {
 					cb(err)
 				} else {
 					localStorage.setItem('justLoginSessionId', newSessionId)
-					end(emitter, api, newSessionId, false, cb)
+					api.getFullApi(newSessionId, function (err, fullApi) {
+						if (err) {
+							cb(err)
+						} else {
+							end(emitter, fullApi, newSessionId, false, cb)
+						}
+					})
 				}
 			})
+		} else {
+			end(emitter, fullApi, existingSessionId, true, cb)
 		}
 	})
 }
