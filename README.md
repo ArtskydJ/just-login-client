@@ -50,8 +50,8 @@ var client = require('just-login-client')
 
 ## `var sock = client(core, sessionState)`
 
-- `core` is a just-login-core object.
-- `sessionState` is a just-login-session-state object.
+- `core` is a [`just-login-core`][jlc] object.
+- `sessionState` is a [`just-login-session-state`][jlss] object.
 - **Returns** a [`sock` object](https://github.com/substack/shoe#var-sock--shoeopts-cb).
 
 ```js
@@ -68,7 +68,11 @@ This function handles remembering the session id in the browser's local storage.
 - `dnodeEndpoint` is a string for the endpoint that dnode uses for communication. The string must start with a forward slash `/`.
 - `cb` is a function that has the following arguments:
 	- `err` is either `null` or an `Error` object.
-	- `newApi` is documented [here](https://github.com/ArtskydJ/just-login-server-api#api-methods).
+	- `newApi` is an object with methods from [`just-login-core`][jlc] and [`just-login-session-state`][jlss], but with the `sessionId` pre-bound:
+		- `beginAuthentication(contactAddress, [cb])` from `just-login-core`
+		- `isAuthenticated(cb)` from `just-login-session-state`
+		- `unauthenticate([cb])` from `just-login-session-state`
+		- `sessionExists(cb)` from `just-login-session-state`
 	- `sessionId` is the new (or previous, when applicable) session id.
 - **Returns** `emitter` which can emit the following events:
 	- `session` is emitted when a session is initiated. An object is emitted with the following properties:
@@ -98,3 +102,7 @@ Install with [npm](http://nodejs.org/download)
 # License
 
 [VOL](http://veryopenlicense.com/)
+
+
+[jlc]: https://github.com/ArtskydJ/just-login-core
+[jlss]: https://github.com/ArtskydJ/just-login-session-state
