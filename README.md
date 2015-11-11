@@ -8,22 +8,13 @@ just-login-client
 Create a server:
 
 ```js
-var JustLoginCore = require('just-login-core')
-var JustLoginSessionManager = require('just-login-example-session-manager')
-var http = require('http')
-var level = require('level')
-var shoe = require('shoe')
-var dnode = require('dnode')
+var db = require('level')('./databases/core')
+var core = require('just-login-core')(db)
+var sessionState = require('just-login-session-state')(core, db)
+var server = require('http').createServer()
+var sock = require('just-login-client')(core, sessionState)
 
-var db = level('./databases/core')
-var core = JustLoginCore(db)
-var sessionManager = JustLoginSessionManager(core)
-var server = http.createServer()
-
-shoe(function(stream) {
-	var d = dnode(sessionManager)
-	d.pipe(stream).pipe(d)
-}).install(server, '/dnode-example')
+sock.install(server, '/dnode-example')
 ```
 
 Create a client:
