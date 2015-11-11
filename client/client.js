@@ -1,6 +1,6 @@
 var shoe = require('shoe')
 var dnode = require('dnode')
-var createSession = require('./acquireSession.js')
+var createSession = require('./acquire-session.js')
 var EventEmitter = require('events').EventEmitter
 
 module.exports = function client(dnodeEndpoint, cb) {

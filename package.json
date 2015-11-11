@@ -1,8 +1,8 @@
 {
   "name": "just-login-client",
   "version": "2.0.1",
-  "main": "server.js",
-  "browser": "client.js",
+  "main": "server/server.js",
+  "browser": "client/client.js",
   "author": {
     "name": "ArtskydJ",
     "email": "josephdykstra@gmail.com"
@@ -21,13 +21,13 @@
     "dnode": "^1.2.0"
   },
   "devDependencies": {
+    "just-login-core": "^2.0.1",
+    "just-login-session-state": "^2.0.1",
+    "level-mem": "^0.18.0",
     "mock-dom-storage": "^1.0.0",
-    "tap": "^0.4.11"
-  },
-  "directories": {
-    "test": "test"
+    "tape": "^4.0.0"
   },
   "scripts": {
-    "test": "tap ./test/*.js"
+    "test": "tape ./test/*.js"
   }
 }

@@ -1,16 +1,13 @@
-function emitIfAuthenticated(emitter, fullApi, cb) {
-	fullApi.isAuthenticated(function (err, name) {
-		if (!err && name) {
-			emitter.emit('authenticated', name)
-			cb && cb()
-		}
-	})
-}
-
 function beginWatchingForAuthentication(emitter, fullApi) {
-	var timer = setInterval(function() {
-		emitIfAuthenticated(emitter, fullApi, clearInterval.bind(null, timer) )
+	var interval = setInterval(function() {
+		fullApi.isAuthenticated(function (err, name) {
+			if (!err && name) {
+				emitter.emit('authenticated', name)
+				clearInterval(interval)
+			}
+		})
 	}, 2000)
+	if (interval.unref) interval.unref()
 }
 
 function overwriteBeginAuthentication(emitter, fullApi) {
