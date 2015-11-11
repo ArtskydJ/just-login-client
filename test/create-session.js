@@ -1,10 +1,10 @@
 var test = require('tape')
 var EventEmitter = require('events').EventEmitter
 var acquireSession = require('../client/acquire-session.js')
-var mockDomStorage = require('mock-dom-storage')
 var makeClientApi = require('../server/api-for-client.js')
+var mockDomStorage = require('mock-dom-storage')
 
-localStorage = (typeof localStorage !== 'undefined') ? localStorage : mockDomStorage() // Global
+localStorage = (typeof localStorage !== 'undefined') ? localStorage : mockDomStorage() // jshint ignore:line
 
 var fakeApi = makeClientApi({
 	beginAuthentication: function (sessionId, addr, cb) {
