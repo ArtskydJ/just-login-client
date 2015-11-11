@@ -1,15 +1,6 @@
 var shoe = require('shoe')
-var dnode = require('dnode')
-var createSession = require('./acquire-session.js')
-var EventEmitter = require('events').EventEmitter
+var instance = require('./instance.js')
 
 module.exports = function client(dnodeEndpoint, cb) {
-	var emitter = new EventEmitter()
-	var stream = shoe(dnodeEndpoint)
-	var d = dnode()
-	d.on('remote', function (api) {
-		createSession(api, emitter, cb)
-	})
-	d.pipe(stream).pipe(d)
-	return emitter
+	return instance(shoe(dnodeEndpoint), cb)
 }
