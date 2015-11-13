@@ -1,6 +1,6 @@
 {
   "name": "just-login-client",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "main": "server/server.js",
   "browser": "client/client.js",
   "author": {
