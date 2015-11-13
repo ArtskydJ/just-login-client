@@ -1,5 +1,5 @@
 {
-  "name": "just-login-client",
+  "name": "justlogin.xyz-client",
   "version": "2.0.2",
   "main": "server/server.js",
   "browser": "client/client.js",
@@ -8,13 +8,13 @@
     "email": "josephdykstra@gmail.com"
   },
   "license": "VOL",
-  "description": "Browser code for the just-login-core and just-login-emailer",
+  "description": "An example client for the just-login-core",
   "keywords": [
     "just login"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/coding-in-the-wild/just-login-client"
+    "url": "https://github.com/coding-in-the-wild/justlogin.xyz-client"
   },
   "dependencies": {
     "shoe": "0.0.15",
